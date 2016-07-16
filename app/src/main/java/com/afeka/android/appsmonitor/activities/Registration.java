@@ -4,11 +4,15 @@ import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.afeka.android.appsmonitor.R;
 
@@ -42,6 +46,22 @@ public class Registration extends AppCompatActivity {
             public void onClick(View v) {
                 // Finish the registration screen and return to the Login activity
                 finish();
+            }
+        });
+
+        Switch toggle = (Switch) findViewById(R.id.switchbutton);
+        toggle.setText("Registration Mode: Parent");
+        toggle.setGravity(Gravity.LEFT);
+        toggle.setChecked(true);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Toast.makeText(getBaseContext(), "Parent Mode", Toast.LENGTH_SHORT).show();
+                    buttonView.setText("Registration Mode: Parent");
+                } else {
+                    Toast.makeText(getBaseContext(), "Child Mode", Toast.LENGTH_SHORT).show();
+                    buttonView.setText("Registration Mode: Child");
+                }
             }
         });
     }
