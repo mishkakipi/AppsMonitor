@@ -1,6 +1,7 @@
 package com.afeka.android.appsmonitor.activities;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,11 +11,14 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.afeka.android.appsmonitor.R;
+
+import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,12 +31,14 @@ public class Registration extends AppCompatActivity {
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_signup) Button _signupButton;
     @BindView(R.id.link_login)  TextView _loginLink;
+    @BindView(R.id.mode) TextView registrationMode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         ButterKnife.bind(this);
+        loadRegistrationFields(true);
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,17 +56,16 @@ public class Registration extends AppCompatActivity {
         });
 
         Switch toggle = (Switch) findViewById(R.id.switchbutton);
-        toggle.setText("Registration Mode: Parent");
+
+        //toggle.setText("Registration Mode: Parent");
         toggle.setChecked(true);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 loadRegistrationFields(isChecked);
                 if (isChecked) {
                     //Toast.makeText(getBaseContext(), "Parent Mode", Toast.LENGTH_SHORT).show();
-                    buttonView.setText("Registration Mode: Parent");
                 } else {
                     //Toast.makeText(getBaseContext(), "Child Mode", Toast.LENGTH_SHORT).show();
-                    buttonView.setText("Registration Mode: Child");
                 }
             }
         });
@@ -68,9 +73,15 @@ public class Registration extends AppCompatActivity {
 
     private void loadRegistrationFields(boolean isParent) {
         if (isParent) {
-
+            registrationMode.setText("Registration Mode: Parent");
+            _nameText.setHint("Parent Name");
+            _emailText.setHint("Parent Email");
+            _passwordText.setHint("Password");
         } else {
-
+            registrationMode.setText("Registration Mode: Child");
+            _nameText.setHint("Child Name");
+            _emailText.setHint("Child Email");
+            _passwordText.setHint("Parent Passphrase");
         }
     }
 

@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.afeka.android.appsmonitor.activities.AppsUsageViewer;
+import com.afeka.android.appsmonitor.activities.Registration;
+
 /**
  * Created by Michael on 16/07/2016.
  */
@@ -13,17 +16,42 @@ public class BootLoader extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String mode = settings.getString("mode","");
+        String mode = "";
+        if (settings.contains("mode"))
+            mode = settings.getString("mode","");
+        else {
+            settings.edit().putString("mode", "registration");
+            settings.edit().commit();
+        }
         switch (mode) {
             case "child":
-                Toast.makeText(getBaseContext(), "Child mode", Toast.LENGTH_LONG).show();
+                // make it work as a service
+                Toast.makeText(getBaseContext(), "Child", Toast.LENGTH_LONG).show();
                 break;
             case "parent":
-                Toast.makeText(getBaseContext(), "Parent mode", Toast.LENGTH_LONG).show();
+                Intent parentIntent = new Intent(getApplicationContext(), AppsUsageViewer.class);
+                parentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(parentIntent);
+                Toast.makeText(getBaseContext(), "Parent", Toast.LENGTH_LONG).show();
+                break;
+            case "registration":
+                Intent registrationIntent = new Intent(getApplicationContext(), Registration.class);
+                registrationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(registrationIntent);
+
+                Toast.makeText(getBaseContext(), "Registration", Toast.LENGTH_LONG).show();
                 break;
             default:
-                Toast.makeText(getBaseContext(), "Registration mode", Toast.LENGTH_LONG).show();
+                Intent defaultIntent = new Intent(getApplicationContext(), Registration.class);
+                defaultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(defaultIntent);
+
+                Toast.makeText(getBaseContext(), "Default", Toast.LENGTH_LONG).show();
                 break;
         }
     }
