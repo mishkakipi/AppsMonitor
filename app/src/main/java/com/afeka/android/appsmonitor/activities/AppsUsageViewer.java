@@ -8,9 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.afeka.android.appsmonitor.R;
+import com.afeka.android.appsmonitor.manager.ParentManager;
 
 public class AppsUsageViewer extends AppCompatActivity {
-
+    private ParentManager _parentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
