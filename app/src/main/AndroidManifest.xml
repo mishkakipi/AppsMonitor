@@ -7,18 +7,19 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name=".manager.BootLoader"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.Registration"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.Registration" android:theme="@style/AppTheme.Dark"/>
         <activity
             android:name=".activities.ChildSelector"
             android:label="@string/title_activity_child_selector"
