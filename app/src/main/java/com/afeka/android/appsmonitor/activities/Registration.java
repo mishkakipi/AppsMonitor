@@ -51,19 +51,27 @@ public class Registration extends AppCompatActivity {
 
         Switch toggle = (Switch) findViewById(R.id.switchbutton);
         toggle.setText("Registration Mode: Parent");
-        toggle.setGravity(Gravity.LEFT);
         toggle.setChecked(true);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                loadRegistrationFields(isChecked);
                 if (isChecked) {
-                    Toast.makeText(getBaseContext(), "Parent Mode", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), "Parent Mode", Toast.LENGTH_SHORT).show();
                     buttonView.setText("Registration Mode: Parent");
                 } else {
-                    Toast.makeText(getBaseContext(), "Child Mode", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), "Child Mode", Toast.LENGTH_SHORT).show();
                     buttonView.setText("Registration Mode: Child");
                 }
             }
         });
+    }
+
+    private void loadRegistrationFields(boolean isParent) {
+        if (isParent) {
+
+        } else {
+
+        }
     }
 
     public void signup() {
