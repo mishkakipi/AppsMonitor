@@ -8,6 +8,7 @@ public class AppUsage {
     private String childId;
     private String appId;
     private String appUsageTime;
+    private String appUsageMaxTime;
 
     public AppUsage() {
 
@@ -16,6 +17,7 @@ public class AppUsage {
     private AppUsage(AppUsageBuilder builder) {
         this.id = builder.id;
         this.appUsageTime = builder.appUsageTime;
+        this.appUsageMaxTime = builder.appUsageMaxTime;
         this.appId = builder.appId;
         this.childId = builder.childId;
     }
@@ -35,11 +37,15 @@ public class AppUsage {
     public String getAppUsageTime() {
         return appUsageTime;
     }
+    public String getAppUsageMaxTime() {
+        return appUsageMaxTime;
+    }
 
-    public void update(String childId, String appId, String appUsageTime) {
+    public void update(String childId, String appId, String appUsageTime, String appUsageMaxTime) {
         this.appId = appId;
         this.childId = childId;
         this.appUsageTime = appUsageTime;
+        this.appUsageMaxTime = appUsageMaxTime;
     }
     public static AppUsageBuilder getBuilder() {
         return new AppUsageBuilder();
@@ -48,6 +54,7 @@ public class AppUsage {
     public static class AppUsageBuilder {
 
         private String appUsageTime;
+        private String appUsageMaxTime;
         private String appId;
         private String childId;
         private String id;
@@ -58,6 +65,10 @@ public class AppUsage {
         }
         public AppUsageBuilder appUsageTime(String appUsageTime) {
             this.appUsageTime = appUsageTime;
+            return this;
+        }
+        public AppUsageBuilder appUsageMaxTime(String appUsageMaxTime) {
+            this.appUsageMaxTime = appUsageMaxTime;
             return this;
         }
         public AppUsageBuilder appId(String appId) {

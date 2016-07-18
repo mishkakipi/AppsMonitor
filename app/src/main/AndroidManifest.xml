@@ -7,15 +7,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
-
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activities.MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Dark"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,22 +22,26 @@
         </activity>
         <activity
             android:name=".activities.Registration"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_child_selector"
-            android:theme="@style/AppTheme.Dark"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".activities.ChildSelector"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_child_selector"
-            android:theme="@style/AppTheme.Dark"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+            android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".activities.AppsUsageViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_app_selector"
-            android:theme="@style/AppTheme.Dark"
             android:screenOrientation="portrait"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".activities.History"
+            android:label="@string/title_activity_history"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

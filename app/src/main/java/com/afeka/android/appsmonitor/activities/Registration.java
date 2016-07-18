@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 
 public class Registration extends AppCompatActivity {
     private static final String TAG = "RegistrationActivity";
-
+    public static final String PREFS_NAME = "appsmonitor.properties";
     @BindView(R.id.input_name) EditText _nameText;
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
@@ -123,6 +123,10 @@ public class Registration extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_APPEND);
+        SharedPreferences.Editor settingsEditor = settings.edit();
+        settingsEditor.putString("mode", "parent");
+        settingsEditor.commit();
         finish();
     }
 

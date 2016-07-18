@@ -4,4 +4,5 @@
     <string name="title_activity_child_selector">ChildSelector</string>
     <string name="title_activity_app_selector">AppSelector</string>
     <string name="title_activity_usage_viewer">UsageViewer</string>
+    <string name="title_activity_history">History</string>
 </resources>
