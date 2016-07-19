@@ -1,6 +1,7 @@
 package com.afeka.android.appsmonitor.activities;
 
 import android.app.ActionBar;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -33,6 +34,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNavigationListener ,SetLimitFragment.OnTimePickedListener,  AdapterView.OnItemSelectedListener {
+    public static final String PREFS_NAME = "appsmonitor.properties";
+
     private ParentManager _parentManager;
     RecyclerView recyclerView;
     private Recycler_View_Adapter adapter;
@@ -43,6 +46,11 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
     private ArrayList<ChildrenNavItem> navSpinner;
     private ChildrenNavigationAdapter childrenAdapter;
     Spinner spinner_nav;
+    boolean isParentMode;
+    String regPassphrase;
+    String name;
+    String email;
+
 
 
     @Override
@@ -51,6 +59,12 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
         setContentView(R.layout.activity_apps_usage_viewer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         _parentManager = new ParentManager();
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_APPEND);
+        isParentMode = settings.getString("mode", "child").equals("parent");
+        name = settings.getString("name", "");
+        email = settings.getString("email", "");
+        regPassphrase = settings.getString("passphrase", "");
+
         spinner_nav = (Spinner) findViewById(R.id.spinner_nav);
         spinner_nav.setOnItemSelectedListener(this);
 
@@ -72,7 +86,17 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
 
     private void loadData() {
         data = _parentManager.getData();
-        refreshData(data);
+        if (data.isEmpty())
+            showRegCode();
+        else
+            refreshData(data);
+    }
+
+    private void showRegCode() {
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        adapter = new Recycler_View_Adapter(regPassphrase, this);//getApplication());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void refreshData(ArrayList<AppUsage> usageData) {

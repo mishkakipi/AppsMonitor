@@ -20,6 +20,7 @@ import com.afeka.android.appsmonitor.data.Data;
 import com.afeka.android.appsmonitor.fragments.SetLimitFragment;
 import com.afeka.android.appsmonitor.views.View_Holder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +31,13 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<View_Holder>{
     Context context;
 
     public Recycler_View_Adapter(List<AppUsage> list, Context context) {
+        this.list = list;
+        this.context = context;
+    }
+
+    public Recycler_View_Adapter(String regPassphrase, Context context) {
+        ArrayList<AppUsage> list = new ArrayList<AppUsage>();
+        list.add(new AppUsage("","",regPassphrase,0));
         this.list = list;
         this.context = context;
     }

@@ -18,8 +18,8 @@ public class ParentManager {
     public ParentManager() {
         // TODO: Initialize repository and fill data
         data = new ArrayList<AppUsage>();
-        data.add(new AppUsage("Michaelk19", "00:30", "00:50", R.drawable.facebook));
-        data.add(new AppUsage("Michaelk20", "00:20", "00:40", R.drawable.facebook));
+        //data.add(new AppUsage("Michaelk19", "00:30", "00:50", R.drawable.facebook));
+        //data.add(new AppUsage("Michaelk20", "00:20", "00:40", R.drawable.facebook));
 
     }
 

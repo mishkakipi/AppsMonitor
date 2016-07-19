@@ -1,6 +1,7 @@
 package com.afeka.android.appsmonitor.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class Registration extends AppCompatActivity {
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_signup) Button _signupButton;
     boolean isParentMode;
+    String regPassphrase;
     @BindView(R.id.mode) TextView registrationMode;
     private RegistrationManager _registrationManager;
     @Override
@@ -98,7 +100,7 @@ public class Registration extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own signup logic here.
-        String regPassphrase = _registrationManager.register(name, email, password, isParentMode);
+        regPassphrase = _registrationManager.register(name, email, password, isParentMode);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -119,8 +121,22 @@ public class Registration extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_APPEND);
         SharedPreferences.Editor settingsEditor = settings.edit();
         settingsEditor.putString("mode", isParentMode?"parent":"child");
+        settingsEditor.putString("name", _nameText.getText().toString());
+        settingsEditor.putString("email", _emailText.getText().toString());
+        settingsEditor.putString("passphrase", regPassphrase);
         settingsEditor.commit();
-        finish();
+        //finish();
+
+        if (isParentMode) {
+            Intent parentIntent = new Intent(getApplicationContext(), AppsUsageViewer.class);
+            parentIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+            startActivity(parentIntent);
+            Toast.makeText(getBaseContext(), "Parent", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getBaseContext(), "Child - TODO", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     public void onSignupFailed() {

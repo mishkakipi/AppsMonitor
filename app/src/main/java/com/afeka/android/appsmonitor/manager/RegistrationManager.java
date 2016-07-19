@@ -5,7 +5,7 @@ package com.afeka.android.appsmonitor.manager;
  */
 public class RegistrationManager {
 
-    RegistrationManager() {
+    public RegistrationManager() {
         //TODO: initialize db connections
     }
     public String register(String name, String email, String password, boolean isParentMode) {
