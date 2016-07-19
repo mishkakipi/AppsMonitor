@@ -2,6 +2,7 @@ package com.afeka.android.appsmonitor.activities;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.afeka.android.appsmonitor.R;
+import com.afeka.android.appsmonitor.manager.RegistrationManager;
 
 import org.w3c.dom.Text;
 
@@ -30,14 +32,15 @@ public class Registration extends AppCompatActivity {
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_signup) Button _signupButton;
-    @BindView(R.id.link_login)  TextView _loginLink;
+    boolean isParentMode;
     @BindView(R.id.mode) TextView registrationMode;
-
+    private RegistrationManager _registrationManager;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         ButterKnife.bind(this);
+        _registrationManager = new RegistrationManager();
         loadRegistrationFields(true);
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
@@ -47,26 +50,14 @@ public class Registration extends AppCompatActivity {
             }
         });
 
-        _loginLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
-                finish();
-            }
-        });
-
         Switch toggle = (Switch) findViewById(R.id.switchbutton);
 
         //toggle.setText("Registration Mode: Parent");
+        isParentMode = true;
         toggle.setChecked(true);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 loadRegistrationFields(isChecked);
-                if (isChecked) {
-                    //Toast.makeText(getBaseContext(), "Parent Mode", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(getBaseContext(), "Child Mode", Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }
@@ -74,15 +65,16 @@ public class Registration extends AppCompatActivity {
     private void loadRegistrationFields(boolean isParent) {
         if (isParent) {
             registrationMode.setText("Registration Mode: Parent");
-            _nameText.setHint("Parent Name");
-            _emailText.setHint("Parent Email");
-            _passwordText.setHint("Password");
+            ((TextInputLayout)_nameText.getParent()).setHint("Parent Name");
+            ((TextInputLayout)_emailText.getParent()).setHint("Parent Email");
+            ((TextInputLayout)_passwordText.getParent()).setHint("Password");
         } else {
             registrationMode.setText("Registration Mode: Child");
-            _nameText.setHint("Child Name");
-            _emailText.setHint("Child Email");
-            _passwordText.setHint("Parent Passphrase");
+            ((TextInputLayout)_nameText.getParent()).setHint("Child Name");
+            ((TextInputLayout)_emailText.getParent()).setHint("Child Email");
+            ((TextInputLayout)_passwordText.getParent()).setHint("Parent Passphrase");
         }
+        isParentMode = isParent;
     }
 
     public void signup() {
@@ -98,7 +90,7 @@ public class Registration extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(Registration.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
+        progressDialog.setMessage("Registering...");
         progressDialog.show();
 
         String name = _nameText.getText().toString();
@@ -106,6 +98,7 @@ public class Registration extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own signup logic here.
+        String regPassphrase = _registrationManager.register(name, email, password, isParentMode);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -125,13 +118,13 @@ public class Registration extends AppCompatActivity {
         setResult(RESULT_OK, null);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_APPEND);
         SharedPreferences.Editor settingsEditor = settings.edit();
-        settingsEditor.putString("mode", "parent");
+        settingsEditor.putString("mode", isParentMode?"parent":"child");
         settingsEditor.commit();
         finish();
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Registration failed", Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }

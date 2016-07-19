@@ -28,21 +28,23 @@
                 android:layout_marginRight="16dp" />
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/limit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/imageView"
-                android:text="Title"
+                android:text="Usage Limit"
+                android:textColor="@color/primary"
                 android:textSize="30sp" />
 
             <TextView
-                android:id="@+id/description"
+                android:id="@+id/currentUse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:layout_toRightOf="@+id/imageView"
-                android:text="Description" />
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="Current Usage"
+                android:textSize="30sp"/>
 
         </RelativeLayout>
 
