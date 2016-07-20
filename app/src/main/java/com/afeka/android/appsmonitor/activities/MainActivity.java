@@ -1,5 +1,6 @@
 package com.afeka.android.appsmonitor.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +15,7 @@ import android.widget.Toast;
 
 import com.afeka.android.appsmonitor.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     public static final String PREFS_NAME = "appsmonitor.properties";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,30 +49,30 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), "Child", Toast.LENGTH_LONG).show();
         } else if(mode.toString().equals("parent")) {
             Intent parentIntent = new Intent(getApplicationContext(), AppsUsageViewer.class);
-            parentIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            parentIntent.setFlags(parentIntent.getFlags()| Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
 
             startActivity(parentIntent);
-            Toast.makeText(getBaseContext(), "Parent", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "Parent", Toast.LENGTH_LONG).show();
 
         } else if(mode.toString().equals("registration")) {
             Intent registrationIntent = new Intent(getApplicationContext(), Registration.class);
-            registrationIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            registrationIntent.setFlags(registrationIntent.getFlags()| Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
 
             startActivity(registrationIntent);
 
-            Toast.makeText(getBaseContext(), "Registration", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "Registration", Toast.LENGTH_LONG).show();
 
         } else {
             Intent defaultIntent = new Intent(getApplicationContext(), Registration.class);
-            defaultIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            defaultIntent.setFlags(defaultIntent.getFlags() | Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_NO_HISTORY);
 
             startActivity(defaultIntent);
 
-            Toast.makeText(getBaseContext(), "Default", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "Default", Toast.LENGTH_LONG).show();
 
         }
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -93,4 +94,5 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 }

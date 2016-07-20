@@ -1,5 +1,6 @@
 package com.afeka.android.appsmonitor.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +27,7 @@ import org.w3c.dom.Text;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Registration extends AppCompatActivity {
+public class Registration extends Activity {
     private static final String TAG = "RegistrationActivity";
     public static final String PREFS_NAME = "appsmonitor.properties";
     @BindView(R.id.input_name) EditText _nameText;

@@ -2,7 +2,6 @@ package com.afeka.android.appsmonitor.manager;
 
 import com.afeka.android.appsmonitor.R;
 import com.afeka.android.appsmonitor.data.AppUsage;
-import com.afeka.android.appsmonitor.data.ParentData;
 import com.afeka.android.appsmonitor.db.ParentRepository;
 
 import java.util.ArrayList;

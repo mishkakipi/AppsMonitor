@@ -1,6 +1,9 @@
 package com.afeka.android.appsmonitor.activities;
 
 import android.app.ActionBar;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -10,18 +13,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afeka.android.appsmonitor.R;
-import com.afeka.android.appsmonitor.data.App;
 import com.afeka.android.appsmonitor.data.AppUsage;
-import com.afeka.android.appsmonitor.data.Data;
+import com.afeka.android.appsmonitor.fragments.RegCodeFragment;
 import com.afeka.android.appsmonitor.fragments.SetLimitFragment;
 import com.afeka.android.appsmonitor.manager.ParentManager;
 import com.afeka.android.appsmonitor.views.ChildrenNavItem;
@@ -29,8 +34,6 @@ import com.afeka.android.appsmonitor.views.ChildrenNavigationAdapter;
 import com.afeka.android.appsmonitor.views.Recycler_View_Adapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNavigationListener ,SetLimitFragment.OnTimePickedListener,  AdapterView.OnItemSelectedListener {
@@ -58,6 +61,7 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apps_usage_viewer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        this.invalidateOptionsMenu();
         _parentManager = new ParentManager();
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_APPEND);
         isParentMode = settings.getString("mode", "child").equals("parent");
@@ -81,8 +85,26 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
                 loadData();
             }
         });
+
+        FloatingActionButton showRegCode = (FloatingActionButton) findViewById(R.id.regCodeDisplay);
+        showRegCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag(regPassphrase);
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
+                DialogFragment newFragment = RegCodeFragment.newInstance(regPassphrase);
+                newFragment.show(ft, "dialog");
+            }
+        });
         loadData();
     }
+
 
     private void loadData() {
         data = _parentManager.getData();
@@ -93,6 +115,7 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
     }
 
     private void showRegCode() {
+        spinner_nav.setVisibility(View.INVISIBLE);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         adapter = new Recycler_View_Adapter(regPassphrase, this);//getApplication());
         recyclerView.setAdapter(adapter);
@@ -100,6 +123,7 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
     }
 
     private void refreshData(ArrayList<AppUsage> usageData) {
+        spinner_nav.setVisibility(View.VISIBLE);
         navSpinner = new ArrayList<ChildrenNavItem>();
         for (AppUsage child : usageData)
             navSpinner.add(new ChildrenNavItem(child.childName, R.drawable.child));

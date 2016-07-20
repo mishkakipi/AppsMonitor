@@ -1,6 +1,5 @@
 package com.afeka.android.appsmonitor.views;
 
-import android.animation.TimeAnimator;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -16,9 +15,7 @@ import android.widget.Toast;
 import com.afeka.android.appsmonitor.R;
 import com.afeka.android.appsmonitor.activities.AppsUsageViewer;
 import com.afeka.android.appsmonitor.data.AppUsage;
-import com.afeka.android.appsmonitor.data.Data;
 import com.afeka.android.appsmonitor.fragments.SetLimitFragment;
-import com.afeka.android.appsmonitor.views.View_Holder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,7 +91,7 @@ public class Recycler_View_Adapter extends RecyclerView.Adapter<View_Holder>{
         list.add(position, data);
         notifyItemInserted(position);
     }
-    // Remove a RecyclerView item containing the Data object
+    // Remove a RecyclerView item containing the data object
     public void remove(AppUsage data) {
         int position = list.indexOf(data);
         list.remove(position);
