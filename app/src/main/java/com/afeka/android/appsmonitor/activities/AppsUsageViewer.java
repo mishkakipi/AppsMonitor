@@ -4,31 +4,25 @@ import android.app.ActionBar;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afeka.android.appsmonitor.R;
 import com.afeka.android.appsmonitor.data.AppUsage;
 import com.afeka.android.appsmonitor.fragments.RegCodeFragment;
 import com.afeka.android.appsmonitor.fragments.SetLimitFragment;
-import com.afeka.android.appsmonitor.manager.ParentManager;
+import com.afeka.android.appsmonitor.manager.AppUsageManager;
 import com.afeka.android.appsmonitor.views.ChildrenNavItem;
 import com.afeka.android.appsmonitor.views.ChildrenNavigationAdapter;
 import com.afeka.android.appsmonitor.views.Recycler_View_Adapter;
@@ -39,7 +33,7 @@ import java.util.List;
 public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNavigationListener ,SetLimitFragment.OnTimePickedListener,  AdapterView.OnItemSelectedListener {
     public static final String PREFS_NAME = "appsmonitor.properties";
 
-    private ParentManager _parentManager;
+    private AppUsageManager appUsageManager;
     RecyclerView recyclerView;
     private Recycler_View_Adapter adapter;
     ArrayList<AppUsage> data;
@@ -62,12 +56,12 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
         setContentView(R.layout.activity_apps_usage_viewer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         this.invalidateOptionsMenu();
-        _parentManager = new ParentManager();
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_APPEND);
         isParentMode = settings.getString("mode", "child").equals("parent");
         name = settings.getString("name", "");
         email = settings.getString("email", "");
         regPassphrase = settings.getString("passphrase", "");
+        appUsageManager = new AppUsageManager(isParentMode, name, email);
 
         spinner_nav = (Spinner) findViewById(R.id.spinner_nav);
         spinner_nav.setOnItemSelectedListener(this);
@@ -82,7 +76,21 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadData();
+
+                final ProgressDialog progressDialog = new ProgressDialog(AppsUsageViewer.this,
+                        R.style.AppTheme_Dark_Dialog);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Refreshing...");
+                progressDialog.show();
+
+                reloadData();
+
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                progressDialog.dismiss();
+                            }
+                        }, 1000);
             }
         });
 
@@ -107,17 +115,25 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
 
 
     private void loadData() {
-        data = _parentManager.getData();
+        appUsageManager.loadData();
+        data = appUsageManager.getData();
         if (data.isEmpty())
             showRegCode();
         else
             refreshData(data);
     }
-
+    private void reloadData() {
+        appUsageManager.reloadData();
+        data = appUsageManager.getData();
+        if (data.isEmpty())
+            showRegCode();
+        else
+            refreshData(data);
+    }
     private void showRegCode() {
         spinner_nav.setVisibility(View.INVISIBLE);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        adapter = new Recycler_View_Adapter(regPassphrase, this);//getApplication());
+        adapter = new Recycler_View_Adapter(regPassphrase, this, isParentMode);//getApplication());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -131,6 +147,7 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
         childrenAdapter = new ChildrenNavigationAdapter(getApplicationContext(), navSpinner);
 
         spinner_nav.setAdapter(childrenAdapter);
+        spinner_nav.setSelection(childId);
     }
 
 
@@ -144,23 +161,11 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -173,20 +178,35 @@ public class AppsUsageViewer extends AppCompatActivity implements ActionBar.OnNa
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         childId = position;
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        adapter = new Recycler_View_Adapter(filter_data(position), this);//getApplication());
+        adapter = new Recycler_View_Adapter(filter_data(position), this, isParentMode);//getApplication());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        Toast.makeText(getBaseContext(), "Default", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), "Default", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onTimePicked(int hour, int minute) {
-        _parentManager.setLimit(childId, hour, minute);
+        final ProgressDialog progressDialog = new ProgressDialog(AppsUsageViewer.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Saving New Limit...");
+        progressDialog.show();
+
+        appUsageManager.setLimit(childId, hour, minute);
+        appUsageManager.reloadData();
         loadData();
-        Toast.makeText(getBaseContext(), hour+":"+minute, Toast.LENGTH_LONG).show();
+
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 1000);
+        //Toast.makeText(getBaseContext(), hour+":"+minute, Toast.LENGTH_LONG).show();
     }
+
 }

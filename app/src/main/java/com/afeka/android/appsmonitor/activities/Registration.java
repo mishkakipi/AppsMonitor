@@ -128,16 +128,10 @@ public class Registration extends Activity {
         settingsEditor.commit();
         //finish();
 
-        if (isParentMode) {
-            Intent parentIntent = new Intent(getApplicationContext(), AppsUsageViewer.class);
-            parentIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        Intent parentIntent = new Intent(getApplicationContext(), AppsUsageViewer.class);
+        parentIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
-            startActivity(parentIntent);
-            Toast.makeText(getBaseContext(), "Parent", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(getBaseContext(), "Child - TODO", Toast.LENGTH_LONG).show();
-        }
-
+        startActivity(parentIntent);
     }
 
     public void onSignupFailed() {

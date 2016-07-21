@@ -46,7 +46,11 @@ public class MainActivity extends Activity {
             settingsEditor.commit();
         }
         if (mode.toString().equals("child")) {
-            Toast.makeText(getBaseContext(), "Child", Toast.LENGTH_LONG).show();
+            Intent parentIntent = new Intent(getApplicationContext(), AppsUsageViewer.class);
+            parentIntent.setFlags(parentIntent.getFlags()| Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+            startActivity(parentIntent);
+            //Toast.makeText(getBaseContext(), "Child", Toast.LENGTH_LONG).show();
         } else if(mode.toString().equals("parent")) {
             Intent parentIntent = new Intent(getApplicationContext(), AppsUsageViewer.class);
             parentIntent.setFlags(parentIntent.getFlags()| Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
